@@ -1,0 +1,4 @@
+package com.my.quiz.repository;
+
+public interface PlayResultRepository {
+}
