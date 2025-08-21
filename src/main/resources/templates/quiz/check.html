@@ -1,10 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>OX 퀴즈 게임 : 정답</title>
 </head>
 <body>
-
+<h1>OX 퀴즈 게임 : 정답</h1>
+<p th:if="${correct}" style="color:red">정답입니다.</p>
+<p th:unless="${correct}" style="color:blue">오답입니다.</p>
+<a th:href="@{/quiz/play}">다음 문제</a>
+<a th:href="@{/quiz}">CRUD 화면으로</a>
 </body>
 </html>

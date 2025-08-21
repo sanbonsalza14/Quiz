@@ -1,10 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>퀴즈 수정</title></head>
 <body>
-
+<h1>OX Quiz Application - 변경 폼</h1>
+<form th:action="@{/quiz/update}" th:object="${quiz}" method="post">
+    <input type="hidden" th:field="*{id}">
+    <div>
+        <label>퀴즈 내용:</label><br>
+        <textarea th:field="*{content}" rows="4" cols="60"></textarea>
+        <span th:errors="*{content}" style="color:red;font-size:12px;"></span>
+    </div>
+    <div>
+        <label>퀴즈 정답:</label><br>
+        <label><input type="radio" th:field="*{answer}" value="O"> O</label>
+        <label><input type="radio" th:field="*{answer}" value="X"> X</label>
+        <span th:errors="*{answer}" style="color:red;font-size:12px;"></span>
+    </div>
+    <div>
+        <label>작성자(읽기전용):</label>
+        <input th:value="*{writer}" disabled>
+    </div>
+    <button type="submit">수정</button>
+</form>
+<a th:href="@{/quiz}">CRUD 화면으로</a>
 </body>
 </html>

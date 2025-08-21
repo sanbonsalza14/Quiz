@@ -2,19 +2,24 @@ package com.my.quiz.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 @Entity
 @Data
-@Table(name = "Quiz")
+@Table(name = "quiz")                 // ← 테이블명 소문자로 통일
 public class Quiz {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+
     @Column(nullable = false, columnDefinition = "TEXT")
-    private String content; //내용
+    private String content;           // 내용
+
+
     @Column(nullable = false, length = 1)
-    private String answer;  //O/X
+    private String answer;            // "O" / "X"
+
     @Column(nullable = false, length = 255)
-    private String Writer;  //작성자 이메일
+    private String writer;            // ← 소문자 필드명
 }

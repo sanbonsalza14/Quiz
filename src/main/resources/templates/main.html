@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>Main</title></head>
+<body>
+<div th:unless="${session.loginEmail}==null">session 값 확인 :
+  <span>[[${session.loginEmail}]]</span></div>
+<ul>
+  <div th:if="${session.loginEmail}==null">
+    <li><a th:href="@{/user/login}">로그인</a></li>
+    <li><a th:href="@{/user/signup}">회원가입</a></li>
+  </div>
+  <div th:if="${session.loginEmail}!=null">
+    <li><a th:href="@{/user/logout}">로그아웃</a></li>
+    <li><a th:href="@{/user/myInfo}">내 정보 수정</a></li>
+    <div th:if="${session.loginEmail}=='admin@a.b'">
+      <li><a th:href="@{/user/list}">사용자정보리스트</a></li>
+    </div>
+    <li><a th:href="@{/list}">멤버리스트 보기</a></li>
+  </div>
+  <li><a th:href="@{/user/myPage}">AOP 확인</a></li>
+  <li><a th:href="@{/quiz}">퀴즈 CRUD/게임</a></li>
+</ul>
+</body>
+</html>
