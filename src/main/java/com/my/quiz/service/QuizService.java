@@ -5,6 +5,7 @@ import com.my.quiz.entity.PlayResult;
 import com.my.quiz.entity.Quiz;
 import com.my.quiz.repository.PlayResultRepository;
 import com.my.quiz.repository.QuizRepository;
+import com.my.quiz.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -17,6 +18,7 @@ import java.util.List;
 public class QuizService {
     private final QuizRepository quizRepository;
     private final PlayResultRepository playResultRepository;
+    private final UserRepository userRepository;// *주입
 
     public List<QuizDto> findAll() {
         return quizRepository.findAll()
@@ -58,6 +60,15 @@ public class QuizService {
         pr.setCorrect(correct);
         pr.setPlayedAt(LocalDateTime.now());
         playResultRepository.save(pr);
+
+        // 회원 카운트 반영(게스트 제외)
+        if (userEmail != null) {
+            userRepository.findById(userEmail).ifPresent(u -> {
+                if (correct) u.setAnswerTrue(u.getAnswerTrue() + 1);
+                else u.setAnswerFalse(u.getAnswerFalse() + 1);
+                userRepository.save(u);
+            });
+        }
         return correct;
     }
 

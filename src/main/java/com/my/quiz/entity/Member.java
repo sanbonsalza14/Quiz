@@ -2,11 +2,10 @@ package com.my.quiz.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.springframework.data.jpa.repository.Query;
 
 @Entity
 @Data
-public class Member {
+public class Member extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -1,8 +1,10 @@
 package com.my.quiz.controller;
 
 import com.my.quiz.dto.UserDto;
+import com.my.quiz.entity.UserEntity;
 import com.my.quiz.service.UserService;
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
@@ -12,67 +14,93 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/user")
+@RequiredArgsConstructor
 public class UserController {
-    private final UserService userService;
-    public UserController(UserService userService) { this.userService = userService; }
 
+    private final UserService userService;
 
     @GetMapping("login")
     public String loginForm() { return "/user/login"; }
 
+    @PostMapping("login")
+    public String login(UserDto dto, HttpSession session, Model model) {
+        UserDto loginResult = userService.findOneUser(dto.getEmail());
+        if (ObjectUtils.isEmpty(loginResult)) {
+            model.addAttribute("msg", "존재하지 않는 계정입니다.");
+            return "/user/login";
+        }
+
+        // ✅ 실제 엔티티(승인/역할 확인)
+        UserEntity entity = userService.findEntity(dto.getEmail());
+
+        if (!dto.getPassword().equals(loginResult.getPassword())) {
+            model.addAttribute("msg", "비밀번호가 일치하지 않습니다.");
+            return "/user/login";
+        }
+        if (!entity.isApproved()) {
+            model.addAttribute("msg", "관리자 승인 대기중입니다.");
+            return "/user/login";
+        }
+
+        session.setAttribute("loginEmail", dto.getEmail());
+        session.setAttribute("role", entity.getRole().name());
+        session.setMaxInactiveInterval(60 * 30);
+        return "redirect:/";
+    }
 
     @GetMapping("signup")
     public String signupForm(Model model) {
-        model.addAttribute("user", new UserDto()); return "/user/signup"; }
-
+        model.addAttribute("user", new UserDto());
+        return "/user/signup";
+    }
 
     @PostMapping("signup")
     public String signup(@ModelAttribute("user") UserDto dto) {
-        userService.saveUser(dto); return "redirect:/"; }
-
+        userService.saveUser(dto);
+        return "redirect:/";
+    }
 
     @GetMapping("list")
-    public String userList(Model model) { List<UserDto> list = userService.findAllUser(); model.addAttribute("list", list); return "/user/userList"; }
-
+    public String userList(Model model) {
+        List<UserDto> list = userService.findAllUser();
+        model.addAttribute("list", list);
+        return "/user/userList";
+    }
 
     @PostMapping("delete")
     public String userDelete(@RequestParam("email") String email) {
-        userService.deleteUser(email); return "redirect:/user/list"; }
-
+        userService.deleteUser(email);
+        return "redirect:/user/list";
+    }
 
     @PostMapping("update")
     public String updateUserForm(@RequestParam("email") String email, Model model) {
-        UserDto user = userService.findOneUser(email); model.addAttribute("user", user); return "/user/userUpdate"; }
-
+        UserDto user = userService.findOneUser(email);
+        model.addAttribute("user", user);
+        return "/user/userUpdate";
+    }
 
     @PostMapping("updateUser")
     public String updateUser(@ModelAttribute("user") UserDto user) {
-        userService.saveUser(user); return "redirect:/user/list"; }
-
-
-    @PostMapping("login")
-    public String login(UserDto dto, HttpSession session) {
-        UserDto loginResult = userService.findOneUser(dto.getEmail());
-        if (ObjectUtils.isEmpty(loginResult)) return "/user/login";
-        else if (dto.getPassword().equals(loginResult.getPassword())) {
-            session.setAttribute("loginEmail", dto.getEmail());
-            session.setMaxInactiveInterval(60 * 30);
-            return "redirect:/";
-        } else { return "/user/login"; }
+        userService.saveUser(user);
+        return "redirect:/user/list";
     }
 
-
     @GetMapping("logout")
-    public String logout(HttpSession session) { session.invalidate(); return "main"; }
-
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "main";
+    }
 
     @GetMapping("myInfo")
     public String myInfo(HttpSession session, Model model) {
-        String myEmail = session.getAttribute("loginEmail").toString();
-        UserDto user = userService.findOneUser(myEmail);
-        model.addAttribute("user", user); return "/user/userUpdate"; }
-
+        Object loginEmail = session.getAttribute("loginEmail");
+        if (loginEmail == null) return "redirect:/user/login";
+        UserDto user = userService.findOneUser(loginEmail.toString());
+        model.addAttribute("user", user);
+        return "/user/userUpdate";
+    }
 
     @GetMapping("myPage")
-    public String myPaag() { return "/user/myPage"; }
+    public String myPage() { return "/user/myPage"; }
 }

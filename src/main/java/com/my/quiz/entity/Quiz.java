@@ -6,7 +6,7 @@ import lombok.Data;
 @Entity
 @Data
 @Table(name = "quiz")                 // ← 테이블명 소문자로 통일
-public class Quiz {
+public class Quiz extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

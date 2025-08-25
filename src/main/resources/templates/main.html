@@ -1,24 +1,15 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"><title>Main</title></head>
+<head>
+  <meta charset="UTF-8">
+  <title>OX Quiz Application</title>
+</head>
 <body>
-<div th:unless="${session.loginEmail}==null">session 값 확인 :
-  <span>[[${session.loginEmail}]]</span></div>
+<h1>OX Quiz Application</h1>
 <ul>
-  <div th:if="${session.loginEmail}==null">
-    <li><a th:href="@{/user/login}">로그인</a></li>
-    <li><a th:href="@{/user/signup}">회원가입</a></li>
-  </div>
-  <div th:if="${session.loginEmail}!=null">
-    <li><a th:href="@{/user/logout}">로그아웃</a></li>
-    <li><a th:href="@{/user/myInfo}">내 정보 수정</a></li>
-    <div th:if="${session.loginEmail}=='admin@a.b'">
-      <li><a th:href="@{/user/list}">사용자정보리스트</a></li>
-    </div>
-    <li><a th:href="@{/list}">멤버리스트 보기</a></li>
-  </div>
-  <li><a th:href="@{/user/myPage}">AOP 확인</a></li>
-  <li><a th:href="@{/quiz}">퀴즈 CRUD/게임</a></li>
+  <li><a th:href="@{/quiz}">등록된 퀴즈 목록</a><a th:href="@{/quiz/play}"></a></li>
+  <li><a th:href="@{/user/login}">로그인</a><a th:href="@{/user/signup}"></a></li>
+  <li><a th:href="@{/admin/pending}">관리자 승인/비번 관리</a></li>
 </ul>
 </body>
 </html>

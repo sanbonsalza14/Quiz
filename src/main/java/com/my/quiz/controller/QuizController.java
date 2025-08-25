@@ -34,16 +34,22 @@ public class QuizController {
     }
 
     @GetMapping("/insertForm")
-    public String insertForm(Model model){
-        model.addAttribute("quiz", new QuizDto());
+    public String insertForm(Model model, HttpSession session){
+        QuizDto dto = new QuizDto();
+        // 화면에 작성자 표시는 하되 서버에서는 세션으로 최종 주입
+        model.addAttribute("writerEmail", emailOf(session));
+        model.addAttribute("quiz", dto);
         return "quiz/insertForm";
     }
 
     @PostMapping("/insert")
     public String insert(@Valid @ModelAttribute("quiz") QuizDto dto,
                          BindingResult bindingResult,
-                         HttpSession session){
-        if (bindingResult.hasErrors()) return "quiz/insertForm";
+                         HttpSession session, Model model){
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("writerEmail", emailOf(session));
+            return "quiz/insertForm";
+        }
         String email = emailOf(session);
         if (email == null) return "redirect:/user/login";
         dto.setWriter(email);
@@ -92,7 +98,7 @@ public class QuizController {
                         @RequestParam String answer,
                         HttpSession session,
                         Model model){
-        String email = emailOf(session); // null이면 guest로 저장됨
+        String email = emailOf(session); // null이면 guest로 저장
         boolean correct = quizService.checkAnswer(id, answer, email);
         model.addAttribute("correct", correct);
         return "quiz/check";

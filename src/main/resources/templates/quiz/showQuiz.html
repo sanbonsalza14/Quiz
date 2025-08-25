@@ -1,45 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"><title>퀴즈 목록</title></head>
-<body align="center">
-<h1>등록된 퀴즈 목록 <a th:href="@{/quiz/play}">플레이</a></h1>
-<div th:if="${loginEmail != null}">
-    <a th:href="@{/quiz/insertForm}">퀴즈 등록</a>
-</div>
-<table border="1" align="center">
-    <thead>
-    <tr><th>ID</th><th>내용</th><th>정답</th><th>작성자</th><th>변경</th><th>삭제</th></tr>
-    </thead>
-    <tbody>
-    <tr th:if="${list == null or #lists.isEmpty(list)}">
-        <td colspan="6">데이터가 없습니다.</td>
-    </tr>
-    <tr th:each="q: ${list}">
-        <td th:text="${q.id}">1</td>
-        <td th:text="${q.content}">내용</td>
-        <td th:text="${q.answer}">O</td>
-        <td th:text="${q.writer}">writer</td>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
 
-
-        <!-- 작성자==로그인 유저일 때만 노출 -->
-        <td th:if="${loginEmail != null} and ${loginEmail} == ${q.writer}">
-            <a th:href="@{|/quiz/${q.id}|}">변경</a>
-        </td>
-        <td th:if="${loginEmail != null} and ${loginEmail} == ${q.writer}">
-            <form th:action="@{/quiz/delete}" method="post" style="display:inline;">
-                <input type="hidden" name="id" th:value="${q.id}">
-                <input type="submit" value="삭제">
-            </form>
-        </td>
-
-
-        <!-- 작성자 아닌 경우 빈 칸 -->
-        <td th:if="${loginEmail == null} or ${loginEmail} != ${q.writer}"></td>
-        <td th:if="${loginEmail == null} or ${loginEmail} != ${q.writer}"></td>
-    </tr>
-    </tbody>
-</table>
-<br>
-<a th:href="@{/}">메인</a>
 </body>
 </html>

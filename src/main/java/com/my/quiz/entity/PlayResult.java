@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Entity
 @Data
 @Table(name = "play_result")
-public class PlayResult {
+public class PlayResult extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
