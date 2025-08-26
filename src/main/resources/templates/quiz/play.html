@@ -7,4 +7,25 @@
 <body>
 
 </body>
+</html><!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>OX 퀴즈 게임 : PLAY</title></head>
+<body>
+<h1>OX 퀴즈 게임 : PLAY</h1>
+
+<p>퀴즈</p>
+
+<div th:if="${quiz == null}" style="color:red">등록된 문제가 없습니다.</div>
+
+<div th:unless="${quiz == null}">
+  <p th:text="${quiz.content}"></p>
+  <form th:action="@{/quiz/check}" method="post">
+    <input type="hidden" name="id" th:value="${quiz.id}">
+    <button type="submit" name="answer" value="O">O</button>
+    <button type="submit" name="answer" value="X">X</button>
+  </form>
+</div>
+
+<p><a th:href="@{/quiz}">CRUD화면으로 돌아가기</a></p>
+</body>
 </html>
