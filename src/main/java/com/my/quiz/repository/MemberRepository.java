@@ -16,7 +16,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Query(value = "SELECT * FROM member WHERE name LIKE %:keyword% ORDER BY id", nativeQuery = true)
     List<Member> searchname(@Param("keyword") String keyword);
 
-    @Query(value = "SELECT * FROM member WHERE address LIKE %:keyword% ORDER BY id", nativeQuery = true)
+    @Query(value = "SELECT * FROM member WHERE name LIKE %:keyword% ORDER BY id", nativeQuery = true)
     List<Member> searchAddress(@Param("keyword") String keyword);
-
 }

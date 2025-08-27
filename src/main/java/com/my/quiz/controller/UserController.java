@@ -16,7 +16,6 @@ import java.util.List;
 @RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
-
     private final UserService userService;
 
     @GetMapping("login")
@@ -30,7 +29,7 @@ public class UserController {
             return "/user/login";
         }
 
-        // ✅ 실제 엔티티(승인/역할 확인)
+        // ✅ 수정: 실제 엔티티를 조회해 승인/권한을 확인
         UserEntity entity = userService.findEntity(dto.getEmail());
 
         if (!dto.getPassword().equals(loginResult.getPassword())) {

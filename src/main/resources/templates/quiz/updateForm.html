@@ -17,6 +17,7 @@
         <label>퀴즈 정답:</label><br>
         <label><input type="radio" th:field="*{answer}" value="O"> O</label>
         <label><input type="radio" th:field="*{answer}" value="X"> X</label>
+        <p th:if="${#fields.hasErrors('answer')}" th:errors="*{answer}" style="color:red"></p>
     </div>
 
     <div>
@@ -24,7 +25,7 @@
         <input type="text" th:value="${quiz.writer}" readonly>
     </div>
 
-    <button type="submit">송신</button>
+    <button type="submit">저장</button>
 </form>
 
 <p><a th:href="@{/quiz}">CRUD 화면으로 돌아가기</a></p>
