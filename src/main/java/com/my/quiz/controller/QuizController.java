@@ -28,6 +28,11 @@ public class QuizController {
         Object a = s.getAttribute("loginEmail");
         return (a == null) ? null : a.toString();
     }
+    private boolean isAdmin(HttpSession s){
+        Object r = s.getAttribute("role");
+        return r != null && "ADMIN".equals(r.toString());
+    }
+
     private int getInt(HttpSession s, String key){
         Object v = s.getAttribute(key);
         return (v instanceof Integer) ? (Integer)v : 0;
@@ -52,8 +57,10 @@ public class QuizController {
     @GetMapping
     public String list(Model model, HttpSession session){
         List<QuizDto> list = quizService.findAll();
+        Object role = session.getAttribute("role");
         model.addAttribute("list", list);
         model.addAttribute("loginEmail", session.getAttribute("loginEmail"));
+        model.addAttribute("role", role == null ? "GUEST" : role.toString()); // ★ 추가
         return "quiz/showQuiz";
     }
 
@@ -84,8 +91,11 @@ public class QuizController {
     public String updateForm(@PathVariable Long id, Model model, HttpSession session){
         QuizDto dto = quizService.findOne(id);
         if (ObjectUtils.isEmpty(dto)) return "redirect:/quiz";
+
         String email = emailOf(session);
-        if (email == null || !quizService.isOwner(dto, email)) return "redirect:/quiz";
+        // ★ 관리자거나, 본인 글일 때만
+        if (!(isAdmin(session) || quizService.isOwner(dto, email))) return "redirect:/quiz";
+
         model.addAttribute("quiz", dto);
         return "quiz/updateForm";
     }
@@ -96,7 +106,10 @@ public class QuizController {
                          HttpSession session){
         if (bindingResult.hasErrors()) return "quiz/updateForm";
         String email = emailOf(session);
-        if (email == null || !quizService.isOwner(dto.getId(), email)) return "redirect:/quiz";
+
+        // ★ 관리자거나, 본인 글일 때만
+        if (!(isAdmin(session) || quizService.isOwner(dto.getId(), email))) return "redirect:/quiz";
+
         quizService.updatePreserveWriter(dto);
         return "redirect:/quiz";
     }
@@ -104,7 +117,10 @@ public class QuizController {
     @PostMapping("/delete")
     public String delete(@RequestParam Long id, HttpSession session){
         String email = emailOf(session);
-        if (email == null || !quizService.isOwner(id, email)) return "redirect:/quiz";
+
+        // ★ 관리자거나, 본인 글일 때만
+        if (!(isAdmin(session) || quizService.isOwner(id, email))) return "redirect:/quiz";
+
         quizService.delete(id);
         return "redirect:/quiz";
     }
@@ -148,7 +164,7 @@ public class QuizController {
         return "quiz/check";
     }
 
-    // ===== 결과 (이번 라운드 기준 표시, 누적은 참고로 별도 표시) =====
+    // ===== 결과 =====
     @GetMapping("/result")
     public String result(HttpSession session, Model model){
         String email = emailOf(session);
@@ -156,19 +172,16 @@ public class QuizController {
 
         int rCorrect = roundCorrect(session);
         int rWrong   = roundWrong(session);
-        int rTotal   = rCorrect + rWrong;  // ← 이번 라운드 총합 (정확히 20이 되어야 함)
+        int rTotal   = rCorrect + rWrong;
 
-        // 누적(선택 노출용)
         QuizService.UserStats all = quizService.getUserStats(email);
 
         model.addAttribute("email", email);
         model.addAttribute("played", played(session));
         model.addAttribute("max", MAX_ROUNDS);
-
         model.addAttribute("rCorrect", rCorrect);
         model.addAttribute("rWrong", rWrong);
         model.addAttribute("rTotal", rTotal);
-
         model.addAttribute("all", all);
         return "quiz/result";
     }

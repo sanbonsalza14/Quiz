@@ -1,12 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8"><title>관리자 승인</title>
-    <style>
-        body{font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;margin:32px}
-        table{border-collapse:collapse} th,td{border:1px solid #ddd;padding:8px 12px}
-        th{background:#f7f7f7}
-    </style>
+<head><meta charset="UTF-8"><title>관리자 승인</title>
+    <link rel="stylesheet" th:href="@{/css/quiz.css}">
 </head>
 <body>
 <h2>승인 대기 사용자</h2>
@@ -19,20 +14,18 @@
         <td>
             <form th:action="@{/admin/approve}" method="post">
                 <input type="hidden" name="email" th:value="${u.email}">
-                <button type="submit">승인</button>
+                <button class="btn btn--primary" type="submit">승인</button>
             </form>
         </td>
         <td>
             <form th:action="@{/admin/resetPw}" method="post" autocomplete="off">
                 <input type="hidden" name="email" th:value="${u.email}">
                 <input type="password" name="newPw" placeholder="새 비번" required minlength="3">
-                <button type="submit">변경</button>
+                <button class="btn" type="submit">변경</button>
             </form>
         </td>
     </tr>
-    <tr th:if="${#lists.isEmpty(list)}">
-        <td colspan="4">승인 대기 사용자가 없습니다.</td>
-    </tr>
+    <tr th:if="${#lists.isEmpty(list)}"><td colspan="4">승인 대기 사용자가 없습니다.</td></tr>
 </table>
 
 <p style="margin-top:12px"><a th:href="@{/}">홈으로</a></p>
