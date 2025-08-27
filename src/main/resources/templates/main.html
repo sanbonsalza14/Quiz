@@ -2,19 +2,14 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8"><title>OX Quiz Application</title>
-  <style>
-    body{font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;margin:32px}
-    .toast{position:fixed;left:50%;top:24px;transform:translateX(-50%);
-           background:#111;color:#fff;padding:10px 16px;border-radius:8px;box-shadow:0 6px 24px rgba(0,0,0,.15)}
-  </style>
+  <link rel="stylesheet" th:href="@{/css/quiz.css}">
 </head>
 <body>
 
-<!-- ✅ 승인/비번변경 후 메시지 -->
+<!-- 승인/비번변경 후 토스트 -->
 <div th:if="${toast}" class="toast" id="toast">[[${toast}]]</div>
 <script>
-  const t=document.getElementById('toast');
-  if(t){ setTimeout(()=> t.style.display='none', 2200); }
+  const t=document.getElementById('toast'); if(t){ setTimeout(()=> t.style.display='none', 2200); }
 </script>
 
 <h1>OX Quiz Application</h1>

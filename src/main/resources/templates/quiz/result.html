@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><title>OX 퀴즈 게임 : 결과</title>
+    <link rel="stylesheet" th:href="@{/css/quiz.css}">
+</head>
+<body>
+<h1>OX 퀴즈 게임 : 결과</h1>
+
+<p class="progress"
+   th:text="'라운드 진행: ' + ${played} + ' / ' + ${max} + ' (이번 라운드 합계 ' + ${rTotal} + ')'"></p>
+
+<h3>이번 라운드(20문제)</h3>
+<ul>
+    <li th:text="'정답: ' + ${rCorrect}"></li>
+    <li th:text="'오답: ' + ${rWrong}"></li>
+</ul>
+
+<h3>전체 누적(참고)</h3>
+<ul th:if="${all != null}">
+    <li th:text="'누적 정답: ' + ${all.correct}"></li>
+    <li th:text="'누적 오답: ' + ${all.wrong}"></li>
+    <li th:text="'누적 총합: ' + ${all.total}"></li>
+</ul>
+
+<div class="actions">
+    <a th:href="@{/quiz/reset}" class="btn btn--primary">다시 풀기(새 라운드)</a>
+    <a th:href="@{/quiz}" class="btn">CRUD 화면</a>
+    <a th:href="@{/}" class="btn">홈</a>
+</div>
+</body>
+</html>
